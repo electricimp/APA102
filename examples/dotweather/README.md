@@ -20,3 +20,10 @@ The Electric Imp Agent in this example also serves a small web page to allow the
 Connect the April breakout board's ground and VIN pins to the corresponding pins on the DotStar strip.
 
 Because we are using the `spi257` hardware object, the clock line exits from pin 7 and the data line from pin 5.  Both of these pins should be connected to level shifters to bring their signals to 5V before being connected to the corresponding pins on the DotStar strip.
+
+| Imp Output Pin | APA102 Input Pin |
+| ---------------|------------------|
+| VIN            | VCC              |
+| GND            | GND              |
+| 5              | DI               |
+| 7              | C                |
