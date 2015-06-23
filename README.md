@@ -24,7 +24,9 @@ pixels
 
 ### constructor(spiBus, numPixels [, draw])
 
-Instantiate the class with a pre-configured SPI object and the number of pixels that are connected. The SPI object can be configured at any clock speed but must have the *SIMPLEX_TX* flag set:
+Instantiate the class with a SPI object and the number of pixels that are connected.
+
+The SPI object must either be configured manually or later with a call to [`configure()`](#configure). If configured manually, it can be configured at any clock speed.  The *SIMPLEX_TX* flag set may also be set, which prevents the MISO pin from being needlessly configured.
 
 ```squirrel
 #require "APA102.class.nut:1.0.0"
@@ -41,9 +43,9 @@ An optional third parameter can be set to control whether the class will draw an
 
 ### configure()
 
-The *configure* method configures the SPI bus passed into the constructor to work properly with the APA102.
+The *configure* method configures the SPI bus passed into the constructor to work properly with the APA102.  This does not need to be called if the SPI bus has been configured prior to the constructor being called.
 
-This runs the SPI bus at the highest speed supported by the Imp, up to 15 MHz.
+This sets the *SIMPLEX_TX* flag and runs the SPI bus at the highest speed supported by the Imp, up to 15 MHz.
 
 ```squirrel
 // Configure the SPI bus
