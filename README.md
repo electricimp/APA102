@@ -39,6 +39,20 @@ pixels <- APA102(spi, 5);
 
 An optional third parameter can be set to control whether the class will draw an empty frame on initialization. The default value is `true`.
 
+### configure()
+
+The *configure* method configures the SPI bus passed into the constructor to work properly with the APA102.
+
+This runs the SPI bus at the highest speed supported by the Imp, up to 15 MHz.
+
+```squirrel
+// Configure the SPI bus
+spi <- hardware.spi257;
+
+// Instantiate LED array with 5 pixels
+pixels <- APA102.class.nut(spi, 5).configure();
+```
+
 ### set(*index, color*)
 
 The *set* method changes the color of a particular pixel in the frame buffer. The color is passed as as an array of three integers between 0 and 255 representing `[red, green, blue]`.

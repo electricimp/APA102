@@ -40,6 +40,11 @@ class APA102 {
         }
     }
     
+    function configure() {
+        _spi.configure(SIMPLEX_TX, 15000);
+        return this;
+    }
+    
     // Color is an array: [r, g, b] or [r, g, b, brightness]
     function set(index, color) {
         // Default to full brightness if not specified
