@@ -34,7 +34,7 @@ spi <- hardware.spi257;
 spi.configure(SIMPLEX_TX, 7500);
 
 // Instantiate LED array with 5 pixels
-pixels <- APA102.class.nut(spi, 5);
+pixels <- APA102(spi, 5);
 ```
 
 An optional third parameter can be set to control whether the class will draw an empty frame on initialization. The default value is `true`.
