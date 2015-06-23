@@ -487,8 +487,7 @@ agent.on("seteffect", function(val) {
 const NUMPIXELS = 24;
 
 spi <- hardware.spi257;
-spi.configure(SIMPLEX_TX, 7500);
-display <- NeoWeather(spi, NUMPIXELS);
+display <- NeoWeather(spi, NUMPIXELS).configure();
 
 server.log("Ready, running impOS "+imp.getsoftwareversion());
 
