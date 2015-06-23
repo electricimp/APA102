@@ -8,7 +8,7 @@ One example of the APA102 hardware in use is the [Adafruit DotStar](http://www.a
 
 APA102s require a 5V power supply and logic, and each pixel can draw up to 60mA when displaying white in full brightness, so be sure to size your power supply appropriately. Undersized power supplies (lower voltages and/or insufficent current) can cause glitches and/or failure to produce and light at all.
 
-Because APA102s require 5V logic, you will need to shift your logic level to 5V. A sample circuit can be found below using TODO
+Because APA102s require 5V for clock and logic, you will need to shift both of these Imp outputs from 3.3V to 5V.
 
 ## Class Usage
 
