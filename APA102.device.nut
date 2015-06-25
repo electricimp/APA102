@@ -15,7 +15,7 @@ class APA102 {
     // Each blob holds a 4-byte frame controlling one LED
     _data = null;
     
-    function constructor(spiBus, numPixels, shouldDraw=true) {
+    function constructor(spiBus, numPixels) {
         _spi = spiBus;
 
         // Create sentinel frames: the first frame is all 0s, the final one is all 1s
@@ -33,11 +33,6 @@ class APA102 {
         
         // Turn off all leds
         fill([0,0,0]);
-        
-        // Draw if requested
-        if(shouldDraw) {
-            draw();
-        }
     }
     
     function configure() {

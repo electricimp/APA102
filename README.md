@@ -22,7 +22,7 @@ pixels
     .draw();
 ```
 
-### constructor(spiBus, numPixels [, draw])
+### constructor(spiBus, numPixels)
 
 Instantiate the class with a SPI object and the number of pixels that are connected.
 
@@ -39,7 +39,7 @@ spi.configure(SIMPLEX_TX, 7500);
 pixels <- APA102(spi, 5);
 ```
 
-An optional third parameter can be set to control whether the class will draw an empty frame on initialization. The default value is `true`.
+Note that even though the constructor sets up all of the connected LEDs to turn off, this will not be propagated to the lights until [`draw()`](#draw) is called.  You should call [`draw()`](#draw) immediately after the constructor (if a pre-configured SPI bus was passed in) or after [`configure()`](#configure) (if you're using the configure method).
 
 ### configure()
 
