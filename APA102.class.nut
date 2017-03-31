@@ -50,7 +50,7 @@ class APA102 {
         // To select your mode, pass in a valid imp SPI bus OR valid imp GPIO pins (clock and data)
         // SPI mode is the default (_mode is true)
         if (numPixels == 0) {
-            server.error("APA102() requires a non-zero number of pixels.");
+            throw "APA102() requires a non-zero number of pixels.";
             return null;
         } else {
             _num = numPixels;
@@ -59,7 +59,7 @@ class APA102 {
         if (spiBus == null) {
             // Selecting GPIO 'bit bang' mode
             if (clockPin == null || dataPin == null) {
-                server.error("APA102() requires either a non-null SPI bus, or clock and data pin objects.");
+                throw "APA102() requires either a non-null SPI bus, or clock and data pin objects.";
                 return null;
             } else {
                 _clk = clockPin;
@@ -73,12 +73,12 @@ class APA102 {
         }
 
         // Set up the data frame store
-        _data = blob(4 + _num * FRAME_LENGTH + 4);
+        _data = blob(FRAME_LENGTH * (_num + 2));
 
         // Create sentinel frames: the first frame (four bytes) is all 0s, the final one is all 1s
         _data.seek(0, 'b');
         _data.writen(0x00, 'i');
-        _data.seek(4 + numPixels * FRAME_LENGTH, 'b');
+        _data.seek(FRAME_LENGTH * (_num + 1), 'b');
         _data.writen(0xFFFFFFFF, 'i');
 
         // Turn off all the LEDs
@@ -92,22 +92,25 @@ class APA102 {
         return this;
     }
 
-    function set(pixel, color) {
-        // color is an array: [r, g, b] or [r, g, b, brightness]
+    function set(led, color) {
+        // Sets LED at index 'led' from index 'start' to 'end' to specified color
+        // 'color' is an array: [r, g, b] or [r, g, b, brightness]
         // Default to full brightness if not specified
-
-        if (pixel < 0 || pixel > _num - 1) {
+        if (led < 0 || led > _num - 1) {
             server.error("APA102.set() selected pixel is out of range");
             return this;
         }
 
         local brightness = color.len() == 4 ? color[3] : 0xFF;
-        _data.seek(4 + pixel * FRAME_LENGTH, 'b');
+        _data.seek(FRAME_LENGTH * (led + 1), 'b');
         _data.writeblob(_makeFrame(brightness, color[0], color[1], color[2]));
         return this;
     }
 
     function fill(color, start = 0, end = null) {
+        // Sets all LEDs from index 'start' to 'end' with the specified color
+        // 'color' is an array: [r, g, b] or [r, g, b, brightness]
+        // Default to full brightness if not specified
         if (start < 0 || start > _num - 1) {
             server.error("APA102.fill() start parameter is out of range");
             return this;
@@ -122,9 +125,9 @@ class APA102 {
         if (endIndex >= _num) endIndex = _num - 1;
 
         local brightness = color.len() == 4 ? color[3] : 0xFF;
+        _data.seek(FRAME_LENGTH * (start + 1), 'b');
 
-        for (local i = start ; i <= endIndex ; ++i) {
-            _data.seek(4 + i * FRAME_LENGTH, 'b');
+        for (local i = start ; i <= endIndex ; i++) {
             _data.writeblob(_makeFrame(brightness, color[0], color[1], color[2]));
         }
 
@@ -139,7 +142,7 @@ class APA102 {
            // Bit-bang the data via GPIO
             _data.seek(0, 'b');
             foreach (byte in _data) {
-                for (local i = 7 ; i > -1 ; --i) {
+                for (local i = 7 ; i > -1 ; i--) {
                     local bit = (byte >> i) && 0x01;
 
                     // Write the bit value out to the data pin
@@ -158,6 +161,7 @@ class APA102 {
     // ********** PRIVATE METHODS - DO NOT CALL ********** //
 
     static function _makeFrame(brightness, red, green, blue) {
+        // Create a blob containing a given LED's color and brightness data
         local frame = blob(FRAME_LENGTH);
         local globalByte = 0xE0 | (brightness & 0x1F);
         frame[0] = globalByte;
