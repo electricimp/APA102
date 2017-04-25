@@ -1,32 +1,32 @@
- #require "APA102.class.nut:1.0.0"
- 
+#require "APA102.device.lib.nut:2.0.0"
+
 // CONSTANTS
- 
+
 const NUMPIXELS = 5;
 const DELAY = 0.1;
 const COLORDELTA = 8;
- 
+
 // Instantiate the APA102s
- 
+
 spi <- hardware.spi257;
 pixels <- APA102(spi, NUMPIXELS).configure();
-    
+
 local redVal = 0;
 local greenVal = 0;
 local blueVal = 0;
- 
+
 local redDelta = 1;
 local greenDelta = 1;
 local blueDelta = 1;
- 
+
 local redOn = true;
 local greenOn = false;
 local blueOn = false;
- 
+
 local timer = null;
 local pixel = 0;
 local pDelta = 1;
- 
+
 function glowinit(dummy) {
   // All the pixels run through the range colors
 
@@ -35,11 +35,11 @@ function glowinit(dummy) {
   redVal = 0; greenVal = 0; blueVal = 0;
   redDelta = COLORDELTA; greenDelta = COLORDELTA; blueDelta = COLORDELTA;
   redOn = true; greenOn = false; blueOn = false;
-    
+
   // Call the glow effect
   glow();
 }
- 
+
 function glow() {
   // Set the color values of the RGB LEDS
   pixels.fill([redVal, greenVal, blueVal]);
@@ -53,13 +53,13 @@ function glow() {
   // Queue up the presentation of the next frame
   timer = imp.wakeup(DELAY, glow);
 }
- 
+
 function randominit(dummy) {
   // A random pixel glows a random color
   if (timer != null) imp.cancelwakeup(timer);
   random();
 }
- 
+
 function random() {
   // Clear the current color data and write it to the
   // WS2812s to turn them all off
@@ -80,7 +80,7 @@ function random() {
   // Queue up the presentation of the next frame
   timer = imp.wakeup(DELAY * 2, random);
 }
- 
+
 function looperinit(dummy) {
   // The pixels run through all the colors.
   // Only one pixel is illuminated at once, in order
@@ -93,7 +93,7 @@ function looperinit(dummy) {
   pixel = 0;
   looper();
 }
- 
+
 function looper() {
   // Clear all the WS2812s’ colors then write the current
   // color value to the current LED and write it to the hardware
@@ -111,7 +111,7 @@ function looper() {
   // Queue up the presentation of the next frame
   timer = imp.wakeup(DELAY, looper);
 }
- 
+
 function larsoninit(dummy) {
   if (timer != null) imp.cancelwakeup(timer)
 
@@ -120,7 +120,7 @@ function larsoninit(dummy) {
 
   larson();
 }
- 
+
 function larson() {
   // Clear all the WS2812s’ color values to turn them off
   pixels.fill([0,0,0]);
@@ -153,14 +153,14 @@ function larson() {
   // Queue up the presentation of the next frame
   timer = imp.wakeup(DELAY, larson);
 }
- 
+
 function ran(max) {
   // Generate a pseudorandom number between 0 and (max - 1)
   local roll = 1.0 * math.rand() / RAND_MAX;
   roll = roll * max;
   return roll.tointeger();
 }
- 
+
 function adjustColors() {
   // Calculate new color values, running from red to green to blue,
   // and fading from one into the next
@@ -212,7 +212,7 @@ function adjustColors() {
     }
   }
 }
- 
+
 function setColor(color) {
   if (timer!= null) imp.cancelwakeup(timer);
   pixels.fill([0,0,0]);
@@ -230,13 +230,13 @@ function setColor(color) {
   if (blue < 0) blue = 0;
   if (blue > 255) blue = 255;
 
-  for (local i = 0 ; i < NUMPIXELS ; i++) { 
+  for (local i = 0 ; i < NUMPIXELS ; i++) {
     pixels.writePixel(i, [red, green, blue]);
   }
 
   pixels.draw();
 }
- 
+
 function setEffect(effect) {
   switch (effect) {
     case 0:
@@ -255,9 +255,9 @@ function setEffect(effect) {
       larsoninit(true);
   }
 }
- 
+
 // START OF PROGRAM
- 
+
 // Register handlers for messages from the agent
 agent.on("seteffect", setEffect);
 agent.on("setcolor", setColor);

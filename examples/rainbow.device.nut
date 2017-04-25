@@ -2,7 +2,7 @@
 // Code freely adapted from Pimoroni’s Blinkt! example of the same name:
 // https://github.com/pimoroni/blinkt/blob/master/examples/rainbow.py
 
-#require "apa102.class.nut:1.1.0"
+#require "APA102.device.lib.nut:2.0.0"
 
 const SPACING = 22.5;
 

@@ -1,4 +1,4 @@
-# APA102 1.1.0
+# APA102 2.0.0
 
 This class allows the Electric Imp to drive APA102 LEDs. The APA102 is an all-in-one RGB LED with integrated shift register and constant-current driver. The parts are daisy-chained and are controlled over a two-wire (data plus clock) protocol. Each pixel is individually addressable and this allows the part to be used for a wide range of animation effects.
 
@@ -14,13 +14,19 @@ Because APA102s require 5V for clock and logic, you will need to shift both of t
 
 Check out the `/examples` folder in this repo for examples.
 
+**To add this library to your code add** `#require "APA102.device.lib.nut:2.0.0"` **to the top of your device code**
+
 ## Release Notes
+
+### 2.0.0
+
+- Update library name for new naming scheme.
 
 ### 1.1.0
 
 - Add suport for GPIO bit-bang signalling.
 - Convert internal data representation to a blob, rather than an array.
-- Add error checking on parameters
+- Add error checking on parameters.
 
 ### 1.0.0
 
@@ -45,7 +51,7 @@ There are two ways to instantiate the class: with an SPI object, or with clock a
 The SPI object must either be configured manually or later with a call to *configure()*. If configured manually, it can be configured at any clock speed. The *SIMPLEX_TX* flag set may also be set, which prevents the MISO pin from being needlessly configured.
 
 ```squirrel
-#require "APA102.class.nut:1.1.0"
+#require "APA102.device.lib.nut:2.0.0"
 
 // Configure an imp001 SPI bus
 spi <- hardware.spi257;
@@ -55,7 +61,7 @@ spi.configure(SIMPLEX_TX, 7500);
 pixels <- APA102(spi, 5);
 ```
 
-To select the alternative mode, pass `null` into *spiBus*, and imp **pin** objects into *clockPin* and *dataPin*. This lets you drive the two-wire bus directly. This is handy for imps with dedicated SPI buses, such as the imp005.
+To select the alternative mode, you must pass `null` into *spiBus*, and imp **pin** objects into *clockPin* and *dataPin*. This lets you drive the two-wire bus directly. This is handy for imps with dedicated SPI buses, such as the imp005.
 
 ```squirrel
 #require "APA102.class.nut:1.1.0"

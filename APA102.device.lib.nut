@@ -26,7 +26,7 @@ const FRAME_LENGTH = 4;
 
 class APA102 {
 
-    static VERSION = "1.1.0";
+    static VERSION = "2.0.0";
 
     // _spi should be pre-configured with SIMPLEX_TX and any clock speed
     _spi = null;
