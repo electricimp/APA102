@@ -137,7 +137,7 @@ class APA102 {
     function draw() {
         if (_mode) {
             // Write the data store blob to SPI
-            spi.write(_data);
+            _spi.write(_data);
         } else {
            // Bit-bang the data via GPIO
             _data.seek(0, 'b');
