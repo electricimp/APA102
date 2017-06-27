@@ -1,4 +1,4 @@
-# APA102 2.0.0
+# APA102
 
 This class allows the Electric Imp to drive APA102 LEDs. The APA102 is an all-in-one RGB LED with integrated shift register and constant-current driver. The parts are daisy-chained and are controlled over a two-wire (data plus clock) protocol. Each pixel is individually addressable and this allows the part to be used for a wide range of animation effects.
 
@@ -12,7 +12,7 @@ Because APA102s require 5V for clock and logic, you will need to shift both of t
 
 ## Examples
 
-Check out the `/examples` folder in this repo for examples.
+Check out the [`/examples` folder](./examples) in this repo for examples.
 
 **To add this library to your code add** `#require "APA102.device.lib.nut:2.0.0"` **to the top of your device code**
 
@@ -21,9 +21,6 @@ Check out the `/examples` folder in this repo for examples.
 ### 2.0.0
 
 - Update library name for new naming scheme.
-
-### 1.1.0
-
 - Add suport for GPIO bit-bang signalling.
 - Convert internal data representation to a blob, rather than an array.
 - Add error checking on parameters.
@@ -44,15 +41,13 @@ pixels
     .draw();
 ```
 
-### constructor(spiBus, numPixels, clockPin, dataPin)
+### constructor(*spiBus, numPixels[, clockPin], [dataPin]*)
 
-There are two ways to instantiate the class: with an SPI object, or with clock and data pin objects. In either case, you also need to supply the number pixels the instance is to drive.
-
+The contructor takes two required parameters *spiBus* and *numPixels*. The *spiBus* parameter can be either a [SPI object](https://electricimp.com/docs/api/hardware/spi/) or `null`. The *numPixels* parameter must be a non zero integer equal to the number of pixels connected to your hardware. The optional *clockPin* and *dataPin* paramters can be used to drive the two-wire bus directly. These should be imp **pin** objects if *spiBus* is set to `null`.
+ 
 The SPI object must either be configured manually or later with a call to *configure()*. If configured manually, it can be configured at any clock speed. The *SIMPLEX_TX* flag set may also be set, which prevents the MISO pin from being needlessly configured.
 
 ```squirrel
-#require "APA102.device.lib.nut:2.0.0"
-
 // Configure an imp001 SPI bus
 spi <- hardware.spi257;
 spi.configure(SIMPLEX_TX, 7500);
@@ -61,29 +56,42 @@ spi.configure(SIMPLEX_TX, 7500);
 pixels <- APA102(spi, 5);
 ```
 
-To select the alternative mode, you must pass `null` into *spiBus*, and imp **pin** objects into *clockPin* and *dataPin*. This lets you drive the two-wire bus directly. This is handy for imps with dedicated SPI buses, such as the imp005.
+To drive the two-wire bus directly pass in *clockPin* and *dataPin* paramters. This is handy for imps with dedicated SPI buses, such as the imp005.
 
 ```squirrel
-#require "APA102.class.nut:1.1.0"
+// Configure two-wire bus pins
+clock <- hardware.pinK;
+data <- hardware.pinL;
 
 // Instantiate LED array with 5 pixels
-pixels <- APA102(null, 5, hardware.pinK, hardware.pinL);
+pixels <- APA102(null, 5, clock, data);
 ```
 
-Note that even though the constructor sets up all of the connected LEDs to turn off, this will not be propagated to the lights until *draw()* is called.  You should call *draw()* immediately after the constructor (if a pre-configured SPI bus was passed in) or after *configure()* (if you’re using the configure method).
+Note that even though the constructor sets up all of the connected LEDs to turn off, this will not be propagated to the lights until *draw()* is called.  You should call *draw()* immediately after the constructor or after *configure()* (if you’re using the configure method).
 
-### configure()
+### configure(*[clock], [data]*)
 
-The *configure()* method configures the SPI bus passed into the constructor to work properly with the APA102. It is not required for the class’ alternative mode. It does not need to be called if the SPI bus has been configured prior to the constructor being called.
+The *configure()* method can be used to configure the SPI bus passed into the constructor or to configure *clock* and *data* pins if they were not passed into the constructor. This method does not need to be called if the SPI bus has been configured prior to the constructor being called or if imp **pin** objects were passed into the constructor.
 
-This sets the *SIMPLEX_TX* flag and runs the SPI bus at the highest speed supported by the imp, up to 15 MHz.
+To configure the SPI bus to work properly with the APA102 this method sets the *SIMPLEX_TX* flag and runs the SPI bus at the highest speed supported by the imp, up to 15 MHz.
 
 ```squirrel
 // Configure the SPI bus
 spi <- hardware.spi257;
 
 // Instantiate LED array with 5 pixels
-pixels <- APA102.class.nut(spi, 5).configure();
+pixels <- APA102(spi, 5).configure().draw();
+```
+
+To congigure the *clock* and *data* pins with the *configure()* method, pass `null` into the constructor's *spiBus* parameter. 
+
+```squirrel
+// Configure two-wire bus pins
+clock <- hardware.pinK;
+data <- hardware.pinL;
+
+// Instantiate LED array with 5 pixels
+pixels <- APA102.class.nut(null, 5).configure(clock, data).draw();
 ```
 
 ### set(*index, color*)
@@ -121,7 +129,7 @@ pixels
 
 ### draw()
 
-The *draw()* method draws writes the current frame to the pixel array (see examples above).
+The *draw()* method writes the current frame to the pixel strip (see examples above).
 
 ## License
 
