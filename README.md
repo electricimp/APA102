@@ -91,7 +91,7 @@ clock <- hardware.pinK;
 data <- hardware.pinL;
 
 // Instantiate LED array with 5 pixels
-pixels <- APA102.class.nut(null, 5).configure(clock, data).draw();
+pixels <- APA102(null, 5).configure(clock, data).draw();
 ```
 
 ### set(*index, color*)
@@ -123,7 +123,7 @@ pixels.fill([0,0,0]).draw();
 // and the other half blue
 pixels
     .fill([100,0,0], 0, 2)
-    .fill([0,0,100], 3, 4);
+    .fill([0,0,100], 3, 4)
     .draw();
 ```
 

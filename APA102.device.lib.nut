@@ -61,7 +61,7 @@ class APA102 {
         _spi = spiBus;
 
         // Selecting GPIO 'bit bang' mode
-        if (_spi == null) {
+        if (_spi == null && clockPin != null && dataPin != null) {
             configure(clockPin, dataPin);
         }
 
@@ -90,9 +90,9 @@ class APA102 {
             throw APA102_ERROR_CONFIG;
         } else {
             // Congigure clock and data pins to Bit-bang the LED data via GPIO 
-            _clk = spiBus.clockPin;
+            _clk = clockPin;
             _clk.configure(DIGITAL_OUT, 0);
-            _dat = spiBus.dataPin;
+            _dat = dataPin;
             _dat.configure(DIGITAL_OUT, 0);
         }
 
