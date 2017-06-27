@@ -146,7 +146,7 @@ class APA102 {
             try {
                 // Write the data store blob to SPI
                 _spi.write(_data);
-            catch (e) {
+            } catch (e) {
                 throw e;
             }
         } else if (_dat != null && _clk != null) {
