@@ -12,7 +12,7 @@ Because APA102s require 5V for clock and logic, you will need to shift both of t
 
 ## Examples
 
-Check out the [`/examples` folder](./examples) in this repo for examples.
+Check out the [examples folder](./examples) in this repo for examples.
 
 **To add this library to your code add** `#require "APA102.device.lib.nut:2.0.0"` **to the top of your device code**
 
