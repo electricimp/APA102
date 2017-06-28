@@ -43,7 +43,7 @@ pixels
 
 ### constructor(*spiBus, numPixels[, clockPin], [dataPin]*)
 
-The contructor takes two required parameters *spiBus* and *numPixels*. The *spiBus* parameter can be either a [SPI object](https://electricimp.com/docs/api/hardware/spi/) or `null`. The *numPixels* parameter must be a non zero integer equal to the number of pixels connected to your hardware. The optional *clockPin* and *dataPin* paramters can be used to drive the two-wire bus directly. These should be imp **pin** objects if *spiBus* is set to `null`.
+The contructor takes two required parameters *spiBus* and *numPixels*. The *spiBus* parameter can be either a [SPI object](https://electricimp.com/docs/api/hardware/spi/) or can be set to `null` if you wish to drive the two-wire bus directly using the optional *clockPin* and *dataPin* paramters. If used the optional *clockPin* and *dataPin* paramters should be imp **pin** objects. The *numPixels* parameter must be a non zero integer equal to the number of pixels connected to your hardware. 
  
 The SPI object must either be configured manually or later with a call to *configure()*. If configured manually, it can be configured at any clock speed. The *SIMPLEX_TX* flag set may also be set, which prevents the MISO pin from being needlessly configured.
 
@@ -64,14 +64,14 @@ clock <- hardware.pinK;
 data <- hardware.pinL;
 
 // Instantiate LED array with 5 pixels
-pixels <- APA102(null, 5, clock, data);
+pixels <- APA102(null, 5, clock, data).draw();
 ```
 
 Note that even though the constructor sets up all of the connected LEDs to turn off, this will not be propagated to the lights until [`draw()`](#draw) is called.  You should call [`draw()`](#draw) immediately after the constructor or after [`configure()`](#configure) (if you're using the configure method).
 
-### configure(*[clock], [data]*)
+### configure()
 
-The *configure()* method can be used to configure the SPI bus passed into the constructor or to configure *clock* and *data* pins if they were not passed into the constructor. This method does not need to be called if the SPI bus has been configured prior to the constructor being called or if imp **pin** objects were passed into the constructor.
+The *configure()* method can be used to configure the SPI bus passed into the constructor. This method does not need to be called if the SPI bus has been configured prior to the constructor being called.
 
 To configure the SPI bus to work properly with the APA102 this method sets the *SIMPLEX_TX* flag and runs the SPI bus at the highest speed supported by the imp, up to 15 MHz.
 
@@ -81,17 +81,6 @@ spi <- hardware.spi257;
 
 // Instantiate LED array with 5 pixels
 pixels <- APA102(spi, 5).configure().draw();
-```
-
-To congigure the *clock* and *data* pins with the *configure()* method, pass `null` into the constructor's *spiBus* parameter. 
-
-```squirrel
-// Configure two-wire bus pins
-clock <- hardware.pinK;
-data <- hardware.pinL;
-
-// Instantiate LED array with 5 pixels
-pixels <- APA102(null, 5).configure(clock, data).draw();
 ```
 
 ### set(*index, color*)

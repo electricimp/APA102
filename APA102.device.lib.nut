@@ -61,8 +61,16 @@ class APA102 {
         _spi = spiBus;
 
         // Selecting GPIO 'bit bang' mode
-        if (_spi == null && clockPin != null && dataPin != null) {
-            configure(clockPin, dataPin);
+        if (_spi == null) {
+            if (clockPin != null && dataPin != null) {
+                // Congigure clock and data pins to Bit-bang the LED data via GPIO 
+                _clk = clockPin;
+                _clk.configure(DIGITAL_OUT, 0);
+                _dat = dataPin;
+                _dat.configure(DIGITAL_OUT, 0);
+            } else {
+                throw APA102_ERROR_CONFIG;
+            }
         }
 
         // Set up the data frame store
@@ -78,24 +86,13 @@ class APA102 {
         fill([0,0,0]);
     }
 
-    function configure(clockPin = null, dataPin = null) {
-        // This is optional 
-        // Always congifure harware.spi object available 
-        
+    function configure() {
+        // This is optional and only supports spi configuration
         // Configure _spi if we have one
         if (_spi != null) {
             // Note that the imp will select the highest speed at 18000kHz or under
             _spi.configure(SIMPLEX_TX, 24000);
-        } else if (clockPin == null || dataPin == null) {
-            throw APA102_ERROR_CONFIG;
-        } else {
-            // Congigure clock and data pins to Bit-bang the LED data via GPIO 
-            _clk = clockPin;
-            _clk.configure(DIGITAL_OUT, 0);
-            _dat = dataPin;
-            _dat.configure(DIGITAL_OUT, 0);
-        }
-
+        } 
         return this;
     }
 
